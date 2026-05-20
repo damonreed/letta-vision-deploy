@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${LETTA_POSTGRES_PASSWORD}
       POSTGRES_DB: letta
     volumes:
-      - deploy_letta-pgdata:/var/lib/postgresql/data
+      - letta-vision-pgdata:/var/lib/postgresql/data
       - ./db-init:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
     healthcheck:
@@ -34,7 +34,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./shared:/data/shared
-      - letta-memfs:/root/.letta/memfs
+      - letta-vision-memfs:/root/.letta/memfs
     depends_on:
       letta-vision-db:
         condition: service_healthy
@@ -53,6 +53,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  deploy_letta-pgdata:
-    external: true
-  letta-memfs:
+  letta-vision-pgdata:
+  letta-vision-memfs:

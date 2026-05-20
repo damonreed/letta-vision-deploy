@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository defines a **local or private-network** Docker Compose deployment. It wires together PostgreSQL, a Letta server, and letta-vision-client. It is not hardened for anonymous internet exposure.
+This repository defines a **local or private-network** Docker Compose stack. It wires together PostgreSQL, a Letta Vision server, and letta-vision-client. It is not hardened for anonymous internet exposure.
 
 ## Supported versions
 

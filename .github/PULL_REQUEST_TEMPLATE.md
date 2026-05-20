@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- Compose / deploy / docs changes only — UI work belongs in letta-vision-client -->
+<!-- Compose and docs only — UI work belongs in letta-vision-client -->
 
 ## Test plan
 

@@ -2,65 +2,77 @@
 
 Docker Compose stack for a self-hosted **Letta Vision** server (PostgreSQL + pgvector) and the **[letta-vision-client](https://github.com/damonreed/letta-vision-client)** web UI.
 
-This repository is orchestration only: compose services, database init, and shared volumes. The UI is a **sibling repository** checked out next to this directory (not inside it).
+This repository contains only orchestration: `docker-compose.yml`, database bootstrap SQL, and environment templates. Clone **letta-vision-client** as a sibling directory so Compose can build the UI (`../letta-vision-client`).
 
-## Expected directory layout
+## Prerequisites
+
+- Docker with Compose v2
+- Letta Vision server image tagged **`letta-local:latest`** (build from your [letta-vision](https://github.com/letta-ai/letta) server source)
+- Sibling checkout of [letta-vision-client](https://github.com/damonreed/letta-vision-client)
+
+## Directory layout
+
+Use any parent folder; sibling paths matter, not the parent name:
 
 ```
-letta-stack/
-├── letta-vision/              # server source → build image letta-local:latest
-├── letta-vision-client/       # web UI (this compose file builds ../letta-vision-client)
-└── letta-vision-deploy/       # you are here
+your-workspace/
+├── letta-vision/           # server → docker build -t letta-local:latest .
+├── letta-vision-client/    # git clone …/letta-vision-client
+└── letta-vision-deploy/    # git clone …/letta-vision-deploy (this repo)
     ├── docker-compose.yml
     ├── db-init/
-    └── shared/
+    ├── .env.example
+    └── shared/             # created on first run (Letta file mount)
 ```
 
 ## Services
 
 | Service | Port | Description |
 |---------|------|-------------|
-| `letta-vision-db` | 5432 (internal) | PostgreSQL 16 with pgvector |
-| `letta-vision` | 8283 | Letta server (`letta-local:latest` image) |
-| `letta-vision-client` | 8284 | Web UI for agents, chat, memory, files |
+| `letta-vision-db` | internal | PostgreSQL 16 with pgvector |
+| `letta-vision` | 8283 | Letta Vision API (`letta-local:latest`) |
+| `letta-vision-client` | 8284 | Web UI |
 
 ## Quick start
 
-1. Clone [letta-vision-client](https://github.com/damonreed/letta-vision-client) as a sibling: `../letta-vision-client`.
-
-2. Copy environment template and set secrets:
-
-   ```bash
-   cp .env.example .env
-   # Edit .env — generate passwords with: openssl rand -hex 32
-   ```
-
-3. Build the Letta image from `letta-vision` and tag `letta-local:latest`.
-
-4. Start the stack from this directory:
-
-   ```bash
-   docker compose up -d --build
-   ```
-
-5. Open http://localhost:8284 (UI) and http://localhost:8283 (API).
-
-## Volumes
-
-`deploy_letta-pgdata` is marked `external: true` so existing Postgres data from an earlier `deploy` compose project can be reused. To start fresh:
-
 ```bash
-docker volume rm deploy_letta-pgdata   # destructive
-docker volume create deploy_letta-pgdata
+# 1. Clone (sibling layout)
+git clone https://github.com/damonreed/letta-vision-deploy.git
+git clone https://github.com/damonreed/letta-vision-client.git
+
+# 2. Build the server image (from your letta-vision tree)
+cd ../letta-vision   # or wherever you keep server source
+docker build -t letta-local:latest .
+
+# 3. Configure and start
+cd ../letta-vision-deploy
+cp .env.example .env
+# Edit .env — set LETTA_POSTGRES_PASSWORD and LETTA_SERVER_PASSWORD (openssl rand -hex 32)
+mkdir -p shared
+docker compose up -d --build
 ```
 
-Or remove `external: true` from `docker-compose.yml` and let Compose create a new named volume.
+- UI: http://localhost:8284  
+- API: http://localhost:8283  
+
+On first start, Compose creates Docker volumes for Postgres data and Letta memfs. The `db-init` scripts run only when the database volume is new.
+
+## Environment variables
+
+See [.env.example](.env.example). Required:
+
+| Variable | Description |
+|----------|-------------|
+| `LETTA_POSTGRES_PASSWORD` | PostgreSQL password |
+| `LETTA_SERVER_PASSWORD` | Letta API password (used by the UI container) |
+
+Optional keys configure model providers (OpenRouter, E2B, Ollama, etc.) per your Letta Vision server setup.
 
 ## Documentation
 
-- UI architecture: [letta-vision-client/docs/ARCHITECTURE.md](../letta-vision-client/docs/ARCHITECTURE.md)
-- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Security: [SECURITY.md](SECURITY.md)
+- UI design and API: [letta-vision-client/docs/ARCHITECTURE.md](https://github.com/damonreed/letta-vision-client/blob/main/docs/ARCHITECTURE.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [SECURITY.md](SECURITY.md)
 
 ## License
 
