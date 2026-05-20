@@ -18,7 +18,7 @@ cd ~/src/letta-stack
 ```bash
 git clone https://github.com/damonreed/letta-vision-deploy.git
 git clone https://github.com/damonreed/letta-vision-client.git
-git clone https://github.com/damonreed/letta.git letta-vision
+git clone https://github.com/damonreed/letta-vision.git
 ```
 
 Resulting layout:
