@@ -36,10 +36,10 @@ From the server repository:
 
 ```bash
 cd letta-vision
-docker build -t letta-vision:latest .
+docker build -t letta-vision:v0.3.0 -t letta-vision:latest .
 ```
 
-Compose expects that image tag (`letta-vision:latest`) for the `letta-vision` service.
+Compose expects `letta-vision:latest` (build from tag **v0.3.0** for vision support).
 
 ### 4. Build and start the Compose stack
 
