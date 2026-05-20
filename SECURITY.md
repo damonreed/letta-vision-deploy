@@ -27,4 +27,4 @@ For issues in the UI application itself, report to [letta-vision-client/SECURITY
 ## Third-party images
 
 - `pgvector/pgvector:pg16` — track upstream image updates.
-- `letta-vision-local:latest` — build from your audited Letta Vision server source.
+- `letta-vision:latest` — build from your audited Letta Vision server source.

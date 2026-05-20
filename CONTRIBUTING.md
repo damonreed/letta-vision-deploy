@@ -5,7 +5,7 @@ This repository provides Docker Compose configuration for a self-hosted Letta Vi
 ## Related repositories
 
 - **[letta-vision-client](https://github.com/damonreed/letta-vision-client)** — web UI (must be cloned as `../letta-vision-client`).
-- **Letta Vision server** — build and tag `letta-vision-local:latest` from your server source before `docker compose up`.
+- **Letta Vision server** — build and tag `letta-vision:latest` from your server source before `docker compose up`.
 
 ## Changes in this repo
 

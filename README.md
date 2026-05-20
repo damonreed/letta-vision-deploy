@@ -36,10 +36,10 @@ From the server repository:
 
 ```bash
 cd letta-vision
-docker build -t letta-vision-local:latest .
+docker build -t letta-vision:latest .
 ```
 
-Compose expects that image tag (`letta-vision-local:latest`) for the `letta-vision` service.
+Compose expects that image tag (`letta-vision:latest`) for the `letta-vision` service.
 
 ### 4. Build and start the Compose stack
 
@@ -75,7 +75,7 @@ On first start, Compose creates Docker volumes for Postgres and memfs. `db-init/
 | Service | Port | Description |
 |---------|------|-------------|
 | `letta-vision-db` | internal | PostgreSQL 16 with pgvector |
-| `letta-vision` | 8283 | Letta Vision API (`letta-vision-local:latest`) |
+| `letta-vision` | 8283 | Letta Vision API (`letta-vision:latest`) |
 | `letta-vision-client` | 8284 | Web UI |
 
 ## Prerequisites

@@ -17,7 +17,7 @@ services:
       retries: 5
 
   letta-vision:
-    image: letta-vision-local:latest
+    image: letta-vision:latest
     container_name: letta-vision
     ports:
       - "8283:8283"
@@ -50,6 +50,7 @@ services:
     environment:
       - LETTA_BASE_URL=http://letta-vision:8283
       - LETTA_SERVER_PASSWORD=${LETTA_SERVER_PASSWORD}
+      - LETTA_CLIENT_READ_TIMEOUT_SECONDS=${LETTA_LLM_STREAM_TIMEOUT_SECONDS:-600}
     depends_on:
       - letta-vision
     restart: unless-stopped
