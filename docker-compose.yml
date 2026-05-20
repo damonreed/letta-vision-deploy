@@ -1,0 +1,58 @@
+services:
+  letta-vision-db:
+    image: pgvector/pgvector:pg16
+    container_name: letta-vision-db
+    environment:
+      POSTGRES_USER: letta
+      POSTGRES_PASSWORD: ${LETTA_POSTGRES_PASSWORD}
+      POSTGRES_DB: letta
+    volumes:
+      - deploy_letta-pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U letta"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  letta-vision:
+    image: letta-local:latest
+    container_name: letta-vision
+    ports:
+      - "8283:8283"
+    environment:
+      - LETTA_PG_URI=postgresql://letta:${LETTA_POSTGRES_PASSWORD}@letta-vision-db:5432/letta
+      - SECURE=true
+      - LETTA_SERVER_PASSWORD=${LETTA_SERVER_PASSWORD}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - E2B_API_KEY=${E2B_API_KEY}
+      - E2B_SANDBOX_TEMPLATE_ID=${E2B_SANDBOX_TEMPLATE_ID}
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434/v1
+      - LETTA_MEMFS_SERVICE_URL=local
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./shared:/data/shared
+      - letta-memfs:/root/.letta/memfs
+    depends_on:
+      letta-vision-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  letta-vision-client:
+    build: ../letta-vision-client
+    container_name: letta-vision-client
+    ports:
+      - "8284:8284"
+    environment:
+      - LETTA_BASE_URL=http://letta-vision:8283
+      - LETTA_SERVER_PASSWORD=${LETTA_SERVER_PASSWORD}
+    depends_on:
+      - letta-vision
+    restart: unless-stopped
+
+volumes:
+  deploy_letta-pgdata:
+    external: true
+  letta-memfs:

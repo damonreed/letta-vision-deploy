@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: letta-vision-client bugs
+    url: https://github.com/damonreed/letta-vision-client/issues
+    about: UI, API proxy, and frontend issues
+  - name: Security vulnerability
+    url: https://github.com/damonreed/letta-vision-deploy/security/advisories/new
+    about: Please report security issues privately, not in a public issue.
