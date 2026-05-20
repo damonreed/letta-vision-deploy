@@ -1,76 +1,101 @@
 # letta-vision-deploy
 
-Docker Compose stack for a self-hosted **Letta Vision** server (PostgreSQL + pgvector) and the **[letta-vision-client](https://github.com/damonreed/letta-vision-client)** web UI.
+Docker Compose orchestration for a self-hosted **Letta Vision** stack: PostgreSQL (pgvector), the Letta Vision API server, and the **[letta-vision-client](https://github.com/damonreed/letta-vision-client)** web UI.
 
-This repository contains only orchestration: `docker-compose.yml`, database bootstrap SQL, and environment templates. Clone **letta-vision-client** as a sibling directory so Compose can build the UI (`../letta-vision-client`).
+## Full letta-stack install
 
-## Prerequisites
+End-to-end setup on a new machine. All three repositories live as **siblings** under one parent directory.
 
-- Docker with Compose v2
-- Letta Vision server image tagged **`letta-local:latest`** (build from your [letta-vision](https://github.com/letta-ai/letta) server source)
-- Sibling checkout of [letta-vision-client](https://github.com/damonreed/letta-vision-client)
+### 1. Create the workspace
 
-## Directory layout
+```bash
+mkdir -p ~/src/letta-stack
+cd ~/src/letta-stack
+```
 
-Use any parent folder; sibling paths matter, not the parent name:
+### 2. Clone the three repositories
+
+```bash
+git clone https://github.com/damonreed/letta-vision-deploy.git
+git clone https://github.com/damonreed/letta-vision-client.git
+git clone https://github.com/damonreed/letta.git letta-vision
+```
+
+Resulting layout:
 
 ```
-your-workspace/
-├── letta-vision/           # server → docker build -t letta-local:latest .
-├── letta-vision-client/    # git clone …/letta-vision-client
-└── letta-vision-deploy/    # git clone …/letta-vision-deploy (this repo)
-    ├── docker-compose.yml
-    ├── db-init/
-    ├── .env.example
-    └── shared/             # created on first run (Letta file mount)
+letta-stack/
+├── letta-vision/           # Letta Vision server (API)
+├── letta-vision-client/    # Web UI
+└── letta-vision-deploy/    # This repo — Compose stack
 ```
+
+### 3. Build the Letta Vision server image
+
+From the server repository:
+
+```bash
+cd letta-vision
+docker build -t letta-vision-local:latest .
+```
+
+Compose expects that image tag (`letta-vision-local:latest`) for the `letta-vision` service.
+
+### 4. Build and start the Compose stack
+
+```bash
+cd ../letta-vision-deploy
+cp .env.example .env
+```
+
+Edit `.env` and set at least:
+
+- `LETTA_POSTGRES_PASSWORD` — `openssl rand -hex 32`
+- `LETTA_SERVER_PASSWORD` — `openssl rand -hex 32`
+
+Optional keys (OpenRouter, E2B, Ollama, etc.) depend on your server configuration; see [.env.example](.env.example).
+
+```bash
+docker compose up -d --build
+```
+
+The first run builds **letta-vision-client** from `../letta-vision-client` and starts all services.
+
+| Endpoint | URL |
+|----------|-----|
+| Web UI | http://localhost:8284 |
+| Letta API | http://localhost:8283 |
+
+On first start, Compose creates Docker volumes for Postgres and memfs. `db-init/` runs only when the database volume is new.
+
+---
 
 ## Services
 
 | Service | Port | Description |
 |---------|------|-------------|
 | `letta-vision-db` | internal | PostgreSQL 16 with pgvector |
-| `letta-vision` | 8283 | Letta Vision API (`letta-local:latest`) |
+| `letta-vision` | 8283 | Letta Vision API (`letta-vision-local:latest`) |
 | `letta-vision-client` | 8284 | Web UI |
 
-## Quick start
+## Prerequisites
 
-```bash
-# 1. Clone (sibling layout)
-git clone https://github.com/damonreed/letta-vision-deploy.git
-git clone https://github.com/damonreed/letta-vision-client.git
-
-# 2. Build the server image (from your letta-vision tree)
-cd ../letta-vision   # or wherever you keep server source
-docker build -t letta-local:latest .
-
-# 3. Configure and start
-cd ../letta-vision-deploy
-cp .env.example .env
-# Edit .env — set LETTA_POSTGRES_PASSWORD and LETTA_SERVER_PASSWORD (openssl rand -hex 32)
-mkdir -p shared
-docker compose up -d --build
-```
-
-- UI: http://localhost:8284  
-- API: http://localhost:8283  
-
-On first start, Compose creates Docker volumes for Postgres data and Letta memfs. The `db-init` scripts run only when the database volume is new.
+- Docker with Compose v2
+- Git
+- Enough disk for images, volumes, and `shared/` file uploads
 
 ## Environment variables
 
-See [.env.example](.env.example). Required:
-
 | Variable | Description |
 |----------|-------------|
-| `LETTA_POSTGRES_PASSWORD` | PostgreSQL password |
-| `LETTA_SERVER_PASSWORD` | Letta API password (used by the UI container) |
+| `LETTA_POSTGRES_PASSWORD` | PostgreSQL password (required) |
+| `LETTA_SERVER_PASSWORD` | Letta API password; used by the UI container (required) |
 
-Optional keys configure model providers (OpenRouter, E2B, Ollama, etc.) per your Letta Vision server setup.
+See [.env.example](.env.example) for optional provider keys.
 
 ## Documentation
 
-- UI design and API: [letta-vision-client/docs/ARCHITECTURE.md](https://github.com/damonreed/letta-vision-client/blob/main/docs/ARCHITECTURE.md)
+- UI architecture: [letta-vision-client/docs/ARCHITECTURE.md](https://github.com/damonreed/letta-vision-client/blob/main/docs/ARCHITECTURE.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [SECURITY.md](SECURITY.md)
 
