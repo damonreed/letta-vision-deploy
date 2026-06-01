@@ -38,6 +38,7 @@ services:
       - E2B_SANDBOX_TEMPLATE_ID=${E2B_SANDBOX_TEMPLATE_ID}
       - OLLAMA_BASE_URL=http://host.docker.internal:11434/v1
       - LETTA_MEMFS_SERVICE_URL=local
+      - MODEL_OVERRIDES_PATH=/data/shared/model_overrides.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
