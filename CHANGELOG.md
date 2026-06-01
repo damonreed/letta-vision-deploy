@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-01
+
+### Changed
+
+- Default `LETTA_VERSION=0.5.0` in compose and `.env.example`.
+- `docs/RELEASE_NOTES_v0.5.0.md` — stack pairing for three-tier memory release.
+
+### Added
+
+- `MODEL_OVERRIDES_PATH` shared volume mount for server and client.
+- `LETTA_ENCRYPTION_KEY`, `LETTA_TRACK_PROVIDER_TRACE`, `GLOBAL_MAX_CONTEXT_WINDOW_LIMIT` env passthrough.
+- OpenRouter attribution env vars (`OPENROUTER_TITLE`, `OPENROUTER_REFERER`).
+
 ## [0.4.0] - 2026-05-21
 
 ### Changed
@@ -34,7 +47,8 @@ Pre-vision baseline compose stack; LLM timeout env passthrough.
 - `shared/` bind mount for Letta file access.
 - `.env.example` for required secrets and optional provider keys.
 
-[Unreleased]: https://github.com/damonreed/letta-vision-deploy/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/damonreed/letta-vision-deploy/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.5.0
 [0.4.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.4.0
 [0.3.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.3.0
 [0.2.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.2.0
