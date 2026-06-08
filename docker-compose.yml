@@ -17,7 +17,7 @@ services:
       retries: 5
 
   letta-vision:
-    image: letta-vision:latest
+    build: ../letta-vision
     container_name: letta-vision
     ports:
       - "8283:8283"
