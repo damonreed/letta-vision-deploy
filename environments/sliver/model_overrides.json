@@ -1,0 +1,9 @@
+{
+  "vision": {
+    "ollama/gemma4:26b": true,
+    "openai-proxy/kimi-k2.6": true,
+    "openai-proxy/llama-cpp-chat/Qwen3-VL-30B-A3B-Instruct-UD-Q4_K_XL.gguf": true,
+    "openai-proxy/llama-cpp-chat/gemma-4-26B-A4B-it-Q4_K_M.gguf": true,
+    "openrouter/google/gemma-4-31b-it": true
+  }
+}
