@@ -72,6 +72,7 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
       - LETTA_DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2-preview
       - LETTA_EMBED_ALL_MESSAGES=true
+      - LETTA_IMAGE_CAPTION_MODEL_HANDLE=${LETTA_IMAGE_CAPTION_MODEL_HANDLE:-openrouter/minimax/minimax-m3}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
