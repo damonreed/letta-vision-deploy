@@ -1,4 +1,15 @@
 services:
+  minio:
+    image: minio/minio:latest
+    container_name: letta-vision-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - /data/letta-vision/minio:/data
+    restart: unless-stopped
+
   letta-vision-db:
     image: pgvector/pgvector:pg16
     container_name: letta-vision-db
@@ -39,12 +50,19 @@ services:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434/v1
       - LETTA_MEMFS_SERVICE_URL=local
       - MODEL_OVERRIDES_PATH=/data/shared/model_overrides.json
+      - LETTA_OBJECT_STORE_URI=s3://letta-vision/images?endpoint=http://minio:9000
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2-preview
+      - EMBED_ALL_MESSAGES=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./shared:/data/shared
       - letta-vision-memfs:/root/.letta/memfs
     depends_on:
+      minio:
+        condition: service_started
       letta-vision-db:
         condition: service_healthy
     restart: unless-stopped
