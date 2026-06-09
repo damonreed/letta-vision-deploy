@@ -1,4 +1,6 @@
 .env
 shared/*
 !shared/.gitkeep
+data/
+*.dump
 .DS_Store

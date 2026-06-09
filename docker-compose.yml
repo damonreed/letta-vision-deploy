@@ -7,7 +7,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
-      - /data/letta-vision/minio:/data
+      - ${MINIO_DATA_PATH:-./data/minio}:/data
     restart: unless-stopped
 
   minio-init:
@@ -75,7 +75,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./shared:/data/shared
+      - ${MODEL_OVERRIDES_DIR:-./shared}:/data/shared:ro
       - letta-vision-memfs:/root/.letta/memfs
     depends_on:
       minio-init:
@@ -95,7 +95,7 @@ services:
       - LETTA_CLIENT_READ_TIMEOUT_SECONDS=${LETTA_LLM_STREAM_TIMEOUT_SECONDS:-600}
       - MODEL_OVERRIDES_PATH=/data/shared/model_overrides.json
     volumes:
-      - ./shared:/data/shared
+      - ${MODEL_OVERRIDES_DIR:-./shared}:/data/shared:ro
     depends_on:
       - letta-vision
     restart: unless-stopped
