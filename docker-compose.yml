@@ -10,6 +10,23 @@ services:
       - /data/letta-vision/minio:/data
     restart: unless-stopped
 
+  minio-init:
+    image: minio/mc:latest
+    container_name: letta-vision-minio-init
+    depends_on:
+      minio:
+        condition: service_started
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set lv http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+      mc mb --ignore-existing lv/letta-vision &&
+      echo 'bucket letta-vision ready'
+      "
+    restart: "no"
+
   letta-vision-db:
     image: pgvector/pgvector:pg16
     container_name: letta-vision-db
@@ -53,16 +70,16 @@ services:
       - LETTA_OBJECT_STORE_URI=s3://letta-vision/images?endpoint=http://minio:9000
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
-      - DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2-preview
-      - EMBED_ALL_MESSAGES=true
+      - LETTA_DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2-preview
+      - LETTA_EMBED_ALL_MESSAGES=true
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./shared:/data/shared
       - letta-vision-memfs:/root/.letta/memfs
     depends_on:
-      minio:
-        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
       letta-vision-db:
         condition: service_healthy
     restart: unless-stopped
