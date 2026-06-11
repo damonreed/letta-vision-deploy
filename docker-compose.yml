@@ -71,7 +71,7 @@ services:
       - LETTA_OBJECT_STORE_URI=s3://letta-vision/images?endpoint=http://minio:9000
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
-      - LETTA_DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2-preview
+      - LETTA_DEFAULT_EMBEDDING_HANDLE=openrouter/google/gemini-embedding-2
       - LETTA_EMBED_ALL_MESSAGES=true
       - LETTA_IMAGE_CAPTION_MODEL_HANDLE=${LETTA_IMAGE_CAPTION_MODEL_HANDLE:-openrouter/minimax/minimax-m3}
     extra_hosts:
