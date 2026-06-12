@@ -97,7 +97,8 @@ services:
       - LETTA_CLIENT_READ_TIMEOUT_SECONDS=${LETTA_LLM_STREAM_TIMEOUT_SECONDS:-600}
       - MODEL_OVERRIDES_PATH=/data/shared/model_overrides.json
     volumes:
-      - ${MODEL_OVERRIDES_DIR:-./shared}:/data/shared:ro
+      # RW: client persists vision overrides from Providers UI (server mount stays :ro)
+      - ${MODEL_OVERRIDES_DIR:-./shared}:/data/shared
     depends_on:
       - letta-vision
     restart: unless-stopped
