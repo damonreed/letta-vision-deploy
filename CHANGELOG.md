@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-06-13
+
+### Changed
+
+- Default `LETTA_VERSION=0.6.0` in compose and `.env.example`.
+- `docs/RELEASE_NOTES_v0.6.0.md` — stack pairing for unified embedding + multimodal recall GA.
+- README build instructions reference `v0.6.0` tag.
+
+### Added
+
+- MinIO object store services (`minio`, `minio-init`) for image bytes.
+- `LETTA_OBJECT_STORE_URI`, `LETTA_DEFAULT_EMBEDDING_HANDLE`, `LETTA_EMBED_ALL_MESSAGES`, `LETTA_IMAGE_CAPTION_MODEL_HANDLE` in compose.
+- `LETTA_TELEMETRY_PROVIDER_TRACE_PG_METADATA_ONLY` env passthrough.
+- Parameterized `MINIO_DATA_PATH`, `MODEL_OVERRIDES_DIR` host paths in `.env.example`.
+
+### Fixed
+
+- Client `shared/` mount read-write for Providers vision overrides; server stays read-only.
+- Correct `LETTA_*` embedding env var names in compose (replacing deprecated `LETTA_EMBEDDING` usage in docs).
+
 ## [0.5.0] - 2026-06-01
 
 ### Changed
@@ -47,7 +67,8 @@ Pre-vision baseline compose stack; LLM timeout env passthrough.
 - `shared/` bind mount for Letta file access.
 - `.env.example` for required secrets and optional provider keys.
 
-[Unreleased]: https://github.com/damonreed/letta-vision-deploy/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/damonreed/letta-vision-deploy/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.6.0
 [0.5.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.5.0
 [0.4.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.4.0
 [0.3.0]: https://github.com/damonreed/letta-vision-deploy/releases/tag/v0.3.0

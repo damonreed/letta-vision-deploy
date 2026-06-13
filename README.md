@@ -36,10 +36,10 @@ From the server repository:
 
 ```bash
 cd letta-vision
-docker build -t letta-vision:v0.5.0 -t letta-vision:latest .
+docker build -t letta-vision:v0.6.0 -t letta-vision:latest .
 ```
 
-Compose expects `letta-vision:latest` (build from tag **v0.5.0** for three-tier file memory).
+Compose expects `letta-vision:latest` (build from tag **v0.6.0** for unified embedding + multimodal recall).
 
 ### 4. Build and start the Compose stack
 
