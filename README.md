@@ -95,6 +95,7 @@ See [.env.example](.env.example) for optional provider keys.
 
 ## Documentation
 
+- Backup / restore (Postgres + MinIO images): [BACKUP.md](BACKUP.md)
 - UI architecture: [letta-vision-client/docs/ARCHITECTURE.md](https://github.com/damonreed/letta-vision-client/blob/main/docs/ARCHITECTURE.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [SECURITY.md](SECURITY.md)
