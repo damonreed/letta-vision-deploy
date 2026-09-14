@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Daily systemd timer (`systemd/letta-vision-backup.timer`) at 07:00 UTC running `scripts/backup.sh`; `scripts/install-backup-timer.sh` to enable it.
+- Exclusive lock in `scripts/backup.sh` so overlapping runs skip instead of stacking downtime.
+- Backup restart brings MinIO up before the API and skips `minio-init`, which can race and leave the stack down.
+
 ## [0.6.0] - 2026-06-13
 
 ### Changed

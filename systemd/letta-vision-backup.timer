@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Letta Vision backup (07:00 UTC / 02:00 CDT)
+
+[Timer]
+OnCalendar=*-*-* 07:00:00
+Persistent=true
+AccuracySec=1min
+Unit=letta-vision-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -27,13 +27,32 @@ BACKUP_DIR=/data/letta-vision/backups ./scripts/backup.sh
 
 Default `BACKUP_DIR` is a `backups/` sibling of `MINIO_DATA_PATH` when that path is absolute (e.g. `/data/letta-vision/backups`), otherwise `./data/backups`.
 
+A second run while one is in progress exits immediately (`flock` on `$BACKUP_DIR/.backup.lock`).
+
+## Schedule (sliver)
+
+Daily at **07:00 UTC** (02:00 CDT) via systemd timer. The job stops the API, UI, and MinIO for the duration of dump + rsync + tar, then brings the stack back up. Archives accumulate under `/data/letta-vision/backups/` (timestamped; nothing is pruned). Logs append to `/data/letta-vision/backups/backup.log`.
+
+Install or refresh the timer from this repo on the host:
+
+```bash
+./scripts/install-backup-timer.sh
+```
+
+```bash
+systemctl list-timers letta-vision-backup.timer
+journalctl -u letta-vision-backup.service -n 50
+```
+
+Units live in `systemd/letta-vision-backup.{service,timer}`. The host clock on sliver is UTC.
+
 The script:
 
 1. Stops `letta-vision-client`, `letta-vision`, and `minio` (Postgres stays up).
 2. Runs `pg_dump -U letta -Fc -d letta`.
 3. `rsync`s MinIO data into a work tree.
 4. Writes `MANIFEST.txt` and creates `letta-vision-backup-YYYYMMDD-HHMMSS.tar.gz`.
-5. Restarts the stack with `docker compose up -d`.
+5. Restarts MinIO, then the API and UI (`--no-deps` so `minio-init` is not re-run; it races on a cold MinIO listen).
 
 ### Archive layout
 

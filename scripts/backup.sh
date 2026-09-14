@@ -42,12 +42,31 @@ else
   sudo chown -R "$(whoami):$(whoami)" "$BACKUP_DIR"
 fi
 
+LOCK="$BACKUP_DIR/.backup.lock"
+exec 9>"$LOCK"
+if ! flock -n 9; then
+  echo "error: another backup is running (lock $LOCK)" >&2
+  rm -rf "$WORK"
+  exit 1
+fi
+
 echo "=== stopping app + minio (postgres stays up) ==="
 docker compose stop letta-vision-client letta-vision minio
 
 cleanup_start() {
   echo "=== restarting services ==="
-  docker compose up -d
+  # Bring MinIO up first and skip minio-init (bucket already exists).
+  # minio-init races on a cold listen and would otherwise leave the API down.
+  docker compose up -d minio letta-vision-db
+  local i
+  for i in $(seq 1 30); do
+    if docker exec letta-vision-minio sh -c 'true' >/dev/null 2>&1; then
+      sleep 2
+      break
+    fi
+    sleep 1
+  done
+  docker compose up -d --no-deps letta-vision letta-vision-client
 }
 trap cleanup_start EXIT
 

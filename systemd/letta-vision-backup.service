@@ -1,0 +1,19 @@
+[Unit]
+Description=Letta Vision backup (Postgres dump + MinIO images)
+After=docker.service
+Requires=docker.service
+Documentation=file:///home/dreed/src/letta-stack/letta-vision-deploy/BACKUP.md
+
+[Service]
+Type=oneshot
+User=dreed
+Group=dreed
+SupplementaryGroups=docker
+WorkingDirectory=/home/dreed/src/letta-stack/letta-vision-deploy
+Environment=HOME=/home/dreed
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/dreed/src/letta-stack/letta-vision-deploy/scripts/backup.sh
+TimeoutStartSec=2h
+Nice=10
+StandardOutput=append:/data/letta-vision/backups/backup.log
+StandardError=append:/data/letta-vision/backups/backup.log
