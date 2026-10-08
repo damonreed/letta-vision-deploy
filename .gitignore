@@ -2,5 +2,6 @@
 shared/*
 !shared/.gitkeep
 data/
+secrets/
 *.dump
 .DS_Store
